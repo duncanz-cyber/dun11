@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Benchmark</title>
+  <style>
+    body { font-family: sans-serif; background: #eee; padding: 20px; }
+    #results { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Zeb11 Benchmark</h1>
+  <p>Click to benchmark CPU & GPU using WebGL and JS.</p>
+  <button onclick="runBenchmark()">Run Benchmark</button>
+  <div id="results"></div>
+
+  <script>
+    function runBenchmark() {
+      const start = performance.now();
+      let sum = 0;
+      for (let i = 0; i < 1e7; i++) {
+        sum += Math.sqrt(i);
+      }
+      const cpuScore = Math.round(10000 / (performance.now() - start) * 100);
+      
+      let gl = document.createElement('canvas').getContext('webgl');
+      const gpu = gl ? gl.getParameter(gl.RENDERER) : 'Unknown';
+
+      document.getElementById('results').innerHTML = `
+        <strong>CPU Score:</strong> ${cpuScore}<br>
+        <strong>GPU:</strong> ${gpu}<br>
+        <strong>Rating:</strong> ${cpuScore > 500 ? 'Fast' : 'Basic'}
+      `;
+    }
+  </script>
+</body>
+</html>

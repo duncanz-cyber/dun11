@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zeb11 - Web OS</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f0f0;
+      overflow: hidden;
+    }
+
+    #desktop {
+      width: 100%;
+      height: 100%;
+      background: #fff url('assets/wallpapers/default.jpg') center/cover no-repeat;
+      position: relative;
+    }
+
+    #taskbar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 45px;
+      background: #1e1e1e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 -1px 5px rgba(0,0,0,0.3);
+    }
+
+    #start-btn {
+      background-color: red;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+    }
+
+    .window {
+      position: absolute;
+      width: 400px;
+      height: 300px;
+      background: white;
+      border: 1px solid #ccc;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      top: 100px;
+      left: 100px;
+      resize: both;
+      overflow: hidden;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .window iframe {
+      flex: 1;
+      width: 100%;
+      border: none;
+    }
+
+    .title-bar {
+      height: 32px;
+      background: #f2f2f2;
+      color: black;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: move;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .title-bar .title {
+      font-weight: bold;
+    }
+
+    .window-controls button {
+      background: none;
+      border: none;
+      font-size: 14px;
+      margin-left: 8px;
+      cursor: pointer;
+    }
+
+    .window-controls button:hover {
+      background: rgba(0,0,0,0.1);
+      border-radius: 3px;
+    }
+
+    .window.fullscreen {
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      resize: none !important;
+    }
+
+    #start-menu {
+      position: absolute;
+      bottom: 55px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      background: white;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 2000;
+    }
+
+    #start-menu div {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+
+    #start-menu div:hover {
+      background: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <div id="desktop">
+    <div id="start-menu">
+      <!-- Core Apps -->
+      <div onclick="openApp('ZebGX Browser', 'https://iamnotapro.lolo.pro')">ZebGX Browser</div>
+      <div onclick="openApp('Settings', 'apps/Settings/settings.html')">Settings</div>
+      <div onclick="openApp('Zeb Store', 'apps/Store/store.html')">Zeb Store</div>
+      <div onclick="openApp('Task Manager', 'apps/TaskManager/taskmanager.html')">Task Manager</div>
+      <div onclick="openApp('Control Center', 'apps/ControlCenter/controlcenter.html')">Control Center</div>
+      <div onclick="openApp('Installer', 'apps/PackageInstaller/installer.html')">Package Installer</div>
+
+      <!-- New Functional Apps -->
+      <div onclick="openApp('Notepad', 'apps/Notepad/notepad.html')">Notepad</div>
+      <div onclick="openApp('Terminal', 'apps/Terminal/terminal.html')">Terminal</div>
+      <div onclick="openApp('Benchmark', 'apps/Benchmark/benchmark.html')">Benchmark</div>
+      <div onclick="openApp('Themes', 'apps/Themes/themes.html')">Themes</div>
+
+      <!-- System Controls -->
+      <div onclick="alert('System turning off...')">Turn Off</div>
+      <div onclick="alert('Restarting...')">Restart</div>
+      <div onclick="alert('Hibernating...')">Hibernate</div>
+    </div>
+
+    <div id="taskbar">
+      <button id="start-btn" onclick="toggleStartMenu()"></button>
+    </div>
+  </div>
+
+  <script>
+    let zIndex = 1000;
+
+    function toggleStartMenu() {
+      const menu = document.getElementById("start-menu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    function openApp(title, url) {
+      toggleStartMenu();
+
+      const win = document.createElement("div");
+      win.className = "window";
+      win.style.zIndex = ++zIndex;
+
+      win.innerHTML = `
+        <div class="title-bar" onmousedown="dragMouseDown(event, this.parentElement)">
+          <span class="title">${title}</span>
+          <div class="window-controls">
+            <button onclick="minimizeWindow(this)">_</button>
+            <button onclick="maximizeWindow(this)">🗖</button>
+            <button onclick="closeWindow(this)">✕</button>
+          </div>
+        </div>
+        <iframe src="${url}" title="${title}"></iframe>
+      `;
+
+      document.getElementById("desktop").appendChild(win);
+    }
+
+    function closeWindow(btn) {
+      btn.closest(".window").remove();
+    }
+
+    function minimizeWindow(btn) {
+      const win = btn.closest(".window");
+      win.style.display = "none";
+    }
+
+    function maximizeWindow(btn) {
+      const win = btn.closest(".window");
+      const isMax = win.classList.toggle("fullscreen");
+      if (!isMax) {
+        win.style.top = "100px";
+        win.style.left = "100px";
+        win.style.width = "400px";
+        win.style.height = "300px";
+      }
+    }
+
+    function dragMouseDown(e, win) {
+      e.preventDefault();
+      win.style.zIndex = ++zIndex;
+      let pos3 = e.clientX, pos4 = e.clientY;
+
+      function elementDrag(e2) {
+        e2.preventDefault();
+        win.style.top = (win.offsetTop - (pos4 - e2.clientY)) + "px";
+        win.style.left = (win.offsetLeft - (pos3 - e2.clientX)) + "px";
+        pos3 = e2.clientX;
+        pos4 = e2.clientY;
+      }
+
+      function closeDragElement() {
+        document.removeEventListener("mouseup", closeDragElement);
+        document.removeEventListener("mousemove", elementDrag);
+      }
+
+      document.addEventListener("mouseup", closeDragElement);
+      document.addEventListener("mousemove", elementDrag);
+    }
+  </script>
+</body>
+</html>
