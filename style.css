@@ -1,0 +1,117 @@
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: linear-gradient(135deg, #1e1e1e, #2c2c2c);
+  color: white;
+  height: 100%;
+}
+
+.desktop {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.taskbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.taskbar-left, .taskbar-right {
+  display: flex;
+  gap: 10px;
+}
+
+.taskbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.start-button {
+  width: 40px;
+  height: 40px;
+  background-color: red;
+  border-radius: 50%;
+  border: 2px solid white;
+  cursor: pointer;
+}
+
+.control-center {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(50, 50, 50, 0.9);
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.app-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 50px;
+  width: 100%;
+  height: calc(100% - 50px);
+  border: none;
+  background: white;
+  z-index: 0;
+}
+
+.app-window {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 50px;
+  background: white;
+  overflow-y: auto;
+  z-index: 10;
+  padding: 10px;
+  display: none;
+}
+.app-window.active {
+  display: block;
+}
+
+.start-menu {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e1e1e;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  width: 200px;
+  z-index: 20;
+  box-shadow: 0 0 10px #000;
+}
+.start-menu button {
+  display: block;
+  width: 100%;
+  margin: 4px 0;
+  background: #333;
+  color: white;
+  border: none;
+  padding: 8px;
+  text-align: left;
+  cursor: pointer;
+}
+.start-menu.hidden {
+  display: none;
+}

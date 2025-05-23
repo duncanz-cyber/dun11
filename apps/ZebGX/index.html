@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zeb GX Browser</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #eee;
+    }
+
+    header {
+      background-color: #1e1e1e;
+      padding: 1em;
+      text-align: center;
+    }
+
+    h2 {
+      margin: 0;
+    }
+
+    form {
+      text-align: center;
+      padding: 1em;
+    }
+
+    input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background-color: #222;
+      color: #eee;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      background-color: #3a8;
+      color: white;
+      border-radius: 5px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    iframe {
+      width: 100%;
+      height: 85vh;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Zeb GX Browser</h2>
+    <p>Welcome to Zeb GX – a privacy-first web browser with built-in proxy access.</p>
+  </header>
+
+  <form onsubmit="loadProxyURL(event)">
+    <input type="text" id="urlInput" placeholder="Enter a website URL (https://example.com)">
+    <button type="submit">Go</button>
+  </form>
+
+  <iframe id="proxyFrame"></iframe>
+
+  <script>
+    function encodeUltravioletURL(url) {
+      return btoa(url)
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, '');
+    }
+
+    function loadProxyURL(e) {
+      e.preventDefault();
+      const input = document.getElementById("urlInput").value.trim();
+
+      if (!input.startsWith("http://") && !input.startsWith("https://")) {
+        alert("Please enter a valid URL starting with http:// or https://");
+        return;
+      }
+
+      const encodedURL = encodeUltravioletURL(input);
+      const proxy = "https://iamnotapro.lolo.pro/service/"; // Replace if you use your own proxy
+
+      document.getElementById("proxyFrame").src = proxy + encodedURL;
+    }
+  </script>
+</body>
+</html>
+
