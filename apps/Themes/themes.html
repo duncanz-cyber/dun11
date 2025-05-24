@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zeb Theme Manager</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+    .theme-manager {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    .themes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      margin-top: 30px;
+    }
+    .theme {
+      width: 150px;
+      height: 150px;
+      border-radius: 10px;
+      margin: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+    }
+    .theme:hover {
+      transform: scale(1.05);
+    }
+    .light { background: #fff; color: #333; border: 2px solid #ddd; }
+    .dark { background: #1e1e1e; color: white; border: 2px solid #444; }
+    .blue { background: #1e90ff; color: white; border: 2px solid #005cbf; }
+    .green { background: #27ae60; color: white; border: 2px solid #1e8449; }
+  </style>
+</head>
+<body>
+  <div class="theme-manager">
+    <h1>Theme Manager</h1>
+    <div class="themes">
+      <div class="theme light" onclick="applyTheme('light')">Light</div>
+      <div class="theme dark" onclick="applyTheme('dark')">Dark</div>
+      <div class="theme blue" onclick="applyTheme('blue')">Blue</div>
+      <div class="theme green" onclick="applyTheme('green')">Green</div>
+    </div>
+  </div>
+
+  <script>
+    function applyTheme(theme) {
+      alert("Applied " + theme + " theme.");
+      // You can add dynamic theme switching logic here
+      // For example: document.body.className = theme;
+    }
+  </script>
+</body>
+</html>
