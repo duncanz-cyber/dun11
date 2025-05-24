@@ -83,7 +83,7 @@
       display: none;
       width: 100%;
       height: 100%;
-      background: #fff url('assets/wallpapers/default.jpg') center/cover no-repeat;
+      background: linear-gradient(to bottom right, #6fa8dc, #3d85c6);
       position: relative;
     }
 
@@ -214,20 +214,20 @@
   <div id="desktop">
     <div id="start-menu">
       <div onclick="openApp('DunGX Browser', 'https://iamnotapro.lolo.pro')">DunGX Browser</div>
-      <div onclick="openApp('Settings', 'apps/Settings/settings.html')">Settings</div>
-      <div onclick="openApp('Dun Store', 'apps/Store/store.html')">Dun Store</div>
-      <div onclick="openApp('Task Manager', 'apps/TaskManager/taskmanager.html')">Task Manager</div>
-      <div onclick="openApp('Control Center', 'apps/ControlCenter/controlcenter.html')">Control Center</div>
-      <div onclick="openApp('Installer', 'apps/PackageInstaller/installer.html')">Package Installer</div>
-      <div onclick="openApp('Notepad', 'apps/Notepad/notepad.html')">Notepad</div>
-      <div onclick="openApp('Terminal', 'apps/Terminal/terminal.html')">Terminal</div>
-      <div onclick="openApp('Benchmark', 'apps/Benchmark/benchmark.html')">Benchmark</div>
-      <div onclick="openApp('Themes', 'apps/Themes/themes.html')">Themes</div>
-      <div onclick="openApp('File system', 'apps/File system/index.html')">File System</div>
+      <div onclick="openApp('Settings', '')">Settings</div>
+      <div onclick="openApp('Dun Store', '')">Dun Store</div>
+      <div onclick="openApp('Task Manager', '')">Task Manager</div>
+      <div onclick="openApp('Control Center', '')">Control Center</div>
+      <div onclick="openApp('Installer', '')">Package Installer</div>
+      <div onclick="openApp('Notepad', '')">Notepad</div>
+      <div onclick="openApp('Terminal', '')">Terminal</div>
+      <div onclick="openApp('Benchmark', '')">Benchmark</div>
+      <div onclick="openApp('Themes', '')">Themes</div>
+      <div onclick="openApp('File System', '')">File System</div>
       <div onclick="openApp('GAMES', 'https://hamzah7800.github.io/code-maths')">Unblocked game</div>
       <div onclick="alert('System turning off...')">Turn Off</div>
       <div onclick="restartZeb11()">Restart</div>
-      <div onclick="alert('Hibernating...')">Hibernate</div>
+      <div onclick="HibernateZeb11()">Hibernation</div>
     </div>
     <div id="taskbar">
       <button id="start-btn" onclick="toggleStartMenu()"></button>
@@ -326,6 +326,10 @@
     function restartZeb11() {
       document.getElementById("boot-screen").style.display = "flex";
       setTimeout(() => location.reload(), 1000);
+    }
+
+    function HibernateZeb11() {
+      alert("System entering hibernation... (simulated)");
     }
   </script>
 </body>
