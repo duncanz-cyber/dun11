@@ -4,38 +4,38 @@
   <title>Dun Web Terminal</title>
   <style>
     body {
-      background: #1a1a1a; /* Darker background for better contrast */
-      color: #00ff00; /* Bright lime green */
-      font-family: 'Cascadia Code', 'Fira Code', 'monospace'; /* More modern monospace fonts */
+      background: #1a1a1a;
+      color: #00ff00;
+      font-family: 'Cascadia Code', 'Fira Code', 'monospace';
       margin: 0;
       display: flex;
       flex-direction: column;
       height: 100vh;
-      overflow: hidden; /* Prevent body scroll */
+      overflow: hidden;
     }
     #terminal-output {
-      flex-grow: 1; /* Allow output to take available space */
+      flex-grow: 1;
       padding: 10px;
-      overflow-y: auto; /* Enable scrolling for terminal output */
-      white-space: pre-wrap; /* Preserve whitespace and wrap text */
-      word-break: break-all; /* Break long words */
-      scrollbar-width: thin; /* Firefox scrollbar */
-      scrollbar-color: #00ff00 #1a1a1a; /* Firefox scrollbar color */
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      scrollbar-width: thin;
+      scrollbar-color: #00ff00 #1a1a1a;
     }
     #terminal-output::-webkit-scrollbar {
-      width: 8px; /* Webkit scrollbar width */
+      width: 8px;
     }
     #terminal-output::-webkit-scrollbar-track {
-      background: #1a1a1a; /* Webkit scrollbar track */
+      background: #1a1a1a;
     }
     #terminal-output::-webkit-scrollbar-thumb {
-      background-color: #00ff00; /* Webkit scrollbar thumb */
+      background-color: #00ff00;
       border-radius: 4px;
     }
     #input-line {
       display: flex;
       padding: 5px 10px;
-      border-top: 1px solid #00ff00; /* Separator for input line */
+      border-top: 1px solid #00ff00;
     }
     #prompt {
       color: #00ff00;
@@ -45,12 +45,11 @@
       background: none;
       color: #00ff00;
       border: none;
-      outline: none; /* Remove focus outline */
+      outline: none;
       width: 100%;
       font-family: 'Cascadia Code', 'Fira Code', 'monospace';
       font-size: 1em;
     }
-    /* Simple blinking cursor for the input */
     #input:focus {
       caret-color: #00ff00;
     }
@@ -70,15 +69,12 @@
 
     let commandHistory = [];
     let historyIndex = -1;
-    let sudoMode = false; // Tracks if we're in sudo password prompt
-    let sudoCommandToExecute = ''; // Stores the command to run after successful sudo
+    let sudoMode = false;
+    let sudoCommandToExecute = '';
 
-    // Define a simple "password" for sudo
-    const SUDO_PASSWORD = 'password123'; // You can change this
+    const SUDO_PASSWORD = 'password123';
 
-    // Initial welcome message
-    const welcomeMessage = `Welcome to the Web Terminal!
-Type 'help' for a list of commands.`;
+    const welcomeMessage = `Welcome to the Web Terminal!\nType 'help' for a list of commands.`;
     termOutput.innerHTML += welcomeMessage + '<br><br>';
 
     const scrollToBottom = () => {
@@ -90,7 +86,6 @@ Type 'help' for a list of commands.`;
       if (isCommand) {
         prefix = `<span style="color: #00ff00;">user@web-terminal:~$</span> <span style="color: #00ff00;">${text}</span>`;
       } else if (isPasswordInput) {
-        // For password input, we only show the prompt, not the typed text
         prefix = `<span style="color: #00ff00;">[sudo] password for user@web-terminal:</span> `;
       } else {
         prefix = text;
@@ -109,12 +104,12 @@ Type 'help' for a list of commands.`;
   <span style="color: #00ff00;">help</span> - Displays this help message.
   <span style="color: #00ff00;">clear</span> - Clears the terminal screen.
   <span style="color: #00ff00;">date</span> - Displays the current date and time.
-  <span style="color: #00ff00;">echo</span> <span style="color: #00ffff;">[text]</span> - Prints the given text to the terminal.
+  <span style="color: #00ff00;">echo</span> <span style="color: #00ffff;">[text]</span> - Prints the given text.
   <span style="color: #00ff00;">whoami</span> - Displays the current user.
-  <span style="color: #00ff00;">repo</span> - Links to the GitHub repository (example).
-  <span style="color: #00ff00;">about</span> - Information about this terminal.
-  <span style="color: #00ff00;">sudo</span> <span style="color: #00ffff;">[command]</span> - Execute a command as a superuser.
-  <span style="color: #00ff00;">reboot</span> - Simulates a system reboot (requires sudo).`;
+  <span style="color: #00ff00;">repo</span> - Shows the project GitHub link.
+  <span style="color: #00ff00;">about</span> - Info about this terminal.
+  <span style="color: #00ff00;">sudo</span> <span style="color: #00ffff;">[command]</span> - Execute as superuser.
+  <span style="color: #00ff00;">reboot</span> - Simulates a system reboot.`;
           break;
         case 'date':
           output = new Date().toLocaleString();
@@ -124,20 +119,19 @@ Type 'help' for a list of commands.`;
           break;
         case 'clear':
           termOutput.innerHTML = '';
-          break;
+          return;
         case 'whoami':
           output = 'web-user';
           break;
         case 'repo':
-          output = 'Offical Owner <a href="https://github.com/hamzah7800/zeb11" target="_blank" style="color: #00ffff;">press here</a>';
+          output = 'Official Owner <a href="https://github.com/hamzah7800/zeb11" target="_blank" style="color: #00ffff;">press here</a>';
           break;
         case 'about':
           output = 'This is a simple web-based terminal built with HTML, CSS, and JavaScript.';
           break;
         case 'reboot':
-            // This command requires sudo to run
-            output = 'Error: reboot requires superuser privileges. Try "sudo reboot"';
-            break;
+          output = 'Error: reboot requires superuser privileges. Try "sudo reboot"';
+          break;
         default:
           output = `Command not found: ${command}. Type 'help' for a list of commands.`;
       }
@@ -148,60 +142,51 @@ Type 'help' for a list of commands.`;
       const trimmedCmd = cmd.trim();
 
       if (sudoMode) {
-        // If we are in sudo password prompt
         if (trimmedCmd === SUDO_PASSWORD) {
           writeToTerminal('Password accepted.');
           sudoMode = false;
-          // Execute the stored sudo command
           await executeCommand(sudoCommandToExecute);
-          sudoCommandToExecute = ''; // Clear the stored command
+          sudoCommandToExecute = '';
         } else {
           writeToTerminal('Sorry, try again.');
           sudoMode = false;
           sudoCommandToExecute = '';
         }
-        // Always add an empty line after password attempt
         writeToTerminal('');
         return;
       }
 
-      writeToTerminal(trimmedCmd, true); // Display the command typed
+      writeToTerminal(trimmedCmd, true);
 
       if (trimmedCmd === '') {
         scrollToBottom();
         return;
       }
 
-      // Add to history
       if (commandHistory.length === 0 || commandHistory[commandHistory.length - 1] !== trimmedCmd) {
         commandHistory.push(trimmedCmd);
       }
-      historyIndex = commandHistory.length; // Reset history index
+      historyIndex = commandHistory.length;
 
       const [command, ...args] = trimmedCmd.split(' ');
 
       if (command === 'sudo') {
-          const targetCommand = args.join(' ');
-          if (targetCommand === 'reboot') { // Only 'reboot' is sudo-able for now
-              sudoMode = true;
-              sudoCommandToExecute = targetCommand;
-              writeToTerminal('', false, true); // Show password prompt
-              // Set input type to password to hide text
-              input.type = 'password';
-              input.placeholder = ''; // Clear placeholder if any
-          } else {
-              writeToTerminal(`sudo: ${targetCommand}: command not found`);
-              writeToTerminal('');
-          }
-      } else if (trimmedCmd === 'reboot') {
-          // Prevent 'reboot' from running without sudo
-          executeCommand(trimmedCmd);
+        const targetCommand = args.join(' ');
+        if (targetCommand === 'reboot') {
+          sudoMode = true;
+          sudoCommandToExecute = targetCommand;
+          writeToTerminal('', false, true);
+          input.type = 'password';
+        } else {
+          writeToTerminal(`sudo: ${targetCommand}: command not found`);
           writeToTerminal('');
-      }
-      else {
-          // Execute all other commands normally
-          executeCommand(trimmedCmd);
-          writeToTerminal(''); // Add an empty line for better spacing
+        }
+      } else if (command === 'reboot') {
+        executeCommand(trimmedCmd);
+        writeToTerminal('');
+      } else {
+        executeCommand(trimmedCmd);
+        writeToTerminal('');
       }
     };
 
@@ -209,19 +194,17 @@ Type 'help' for a list of commands.`;
       if (e.key === 'Enter') {
         runCommand(input.value);
         input.value = '';
-        // After command, revert input type to text for normal commands
         if (!sudoMode) {
-            input.type = 'text';
-            input.placeholder = '';
+          input.type = 'text';
         }
       } else if (e.key === 'ArrowUp') {
-        e.preventDefault(); // Prevent cursor from moving to the beginning of the input
+        e.preventDefault();
         if (historyIndex > 0) {
           historyIndex--;
           input.value = commandHistory[historyIndex];
         }
       } else if (e.key === 'ArrowDown') {
-        e.preventDefault(); // Prevent cursor from moving to the end of the input
+        e.preventDefault();
         if (historyIndex < commandHistory.length - 1) {
           historyIndex++;
           input.value = commandHistory[historyIndex];
@@ -232,18 +215,15 @@ Type 'help' for a list of commands.`;
       }
     });
 
-    // Focus input on page load
     window.addEventListener('load', () => {
       input.focus();
     });
 
-    // Refocus input if clicked outside
     document.addEventListener('click', (e) => {
       if (!input.contains(e.target) && !termOutput.contains(e.target)) {
         input.focus();
       }
     });
-
   </script>
 </body>
 </html>
