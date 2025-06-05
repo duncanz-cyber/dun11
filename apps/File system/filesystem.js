@@ -28,3 +28,9 @@ function createItem(type) {
 }
 
 renderFileSystem();
+const fs = {
+  'Roblox': {
+    'Games': ['Obby.rbxl', 'Tycoon.rbxl'],
+    'Assets': ['hat.obj', 'avatar.png']
+  }
+};
