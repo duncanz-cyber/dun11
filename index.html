@@ -796,3 +796,122 @@
   </script>
 </body>
 </html>
+<div id="terminal" style="height:100%; display:flex; flex-direction:column; background:black; color:#00ff00; font-family:monospace;">
+  <div id="terminal-output" style="flex:1; padding:10px; overflow:auto;"></div>
+  <div style="display:flex; padding:5px; border-top:1px solid #00ff00;">
+    <span>user@dun11:~$&nbsp;</span>
+    <input id="terminal-input" style="flex:1; background:black; color:#00ff00; border:none; outline:none;" autocomplete="off" />
+  </div>
+</div>
+
+<script>
+  const output = document.getElementById('terminal-output');
+  const input = document.getElementById('terminal-input');
+  let currentPath = '/';
+  const fs = { '/': {} };
+
+  const history = [];
+  let historyIndex = -1;
+
+  function print(msg = '') {
+    output.innerHTML += `<div>${msg}</div>`;
+    output.scrollTop = output.scrollHeight;
+  }
+
+  function prompt() {
+    print(`user@dun11:${currentPath}$`);
+  }
+
+  function resolvePath(path) {
+    if (path === '/') return '/';
+    if (!path.startsWith('/')) path = currentPath + '/' + path;
+    return path.replace(/\/+/g, '/').replace(/\/$/, '');
+  }
+
+  function getDir(path) {
+    const parts = path.split('/').filter(p => p);
+    let dir = fs['/'];
+    for (const p of parts) {
+      if (!dir[p] || typeof dir[p] !== 'object') return null;
+      dir = dir[p];
+    }
+    return dir;
+  }
+
+  function handleCommand(cmd) {
+    const [command, ...args] = cmd.trim().split(' ');
+    switch (command) {
+      case 'help':
+        print('Available commands: ls, cd, mkdir, touch, echo, clear, pwd, help');
+        break;
+      case 'pwd':
+        print(currentPath);
+        break;
+      case 'clear':
+        output.innerHTML = '';
+        break;
+      case 'echo':
+        print(args.join(' '));
+        break;
+      case 'ls': {
+        const path = resolvePath(args[0] || currentPath);
+        const dir = getDir(path);
+        if (dir) print(Object.keys(dir).join('  '));
+        else print(`ls: cannot access '${args[0]}': No such directory`);
+        break;
+      }
+      case 'cd': {
+        const path = resolvePath(args[0] || '/');
+        const dir = getDir(path);
+        if (dir) currentPath = path;
+        else print(`cd: no such file or directory: ${args[0]}`);
+        break;
+      }
+      case 'mkdir': {
+        const path = resolvePath(args[0]);
+        const parentPath = path.split('/').slice(0, -1).join('/') || '/';
+        const name = path.split('/').pop();
+        const parent = getDir(parentPath);
+        if (parent) parent[name] = {};
+        else print(`mkdir: cannot create directory '${args[0]}'`);
+        break;
+      }
+      case 'touch': {
+        const path = resolvePath(args[0]);
+        const parentPath = path.split('/').slice(0, -1).join('/') || '/';
+        const name = path.split('/').pop();
+        const parent = getDir(parentPath);
+        if (parent) parent[name] = '';
+        else print(`touch: cannot create file '${args[0]}'`);
+        break;
+      }
+      default:
+        print(`${command}: command not found`);
+    }
+  }
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const cmd = input.value;
+      print(`user@dun11:${currentPath}$ ${cmd}`);
+      handleCommand(cmd);
+      history.push(cmd);
+      historyIndex = history.length;
+      input.value = '';
+    } else if (e.key === 'ArrowUp') {
+      if (historyIndex > 0) {
+        historyIndex--;
+        input.value = history[historyIndex];
+      }
+    } else if (e.key === 'ArrowDown') {
+      if (historyIndex < history.length - 1) {
+        historyIndex++;
+        input.value = history[historyIndex];
+      } else {
+        input.value = '';
+      }
+    }
+  });
+
+  prompt();
+</script>
