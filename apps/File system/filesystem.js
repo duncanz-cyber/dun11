@@ -1,4 +1,4 @@
-let fileSystem = JSON.parse(localStorage.getItem('zeb11_fs')) || {
+let fileSystem = JSON.parse(localStorage.getItem('Dun11_fs')) || {
   root: []
 };
 
