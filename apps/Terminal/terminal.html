@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Zeb Web Terminal</title>
+  <title>Dun Web Terminal</title>
   <style>
     body {
       background: #1a1a1a;
@@ -91,14 +91,14 @@
 
     // Virtual file system
     const files = {
-      "readme.txt": "Welcome to Zeb Web Terminal.",
+      "readme.txt": "Welcome to Dun Web Terminal.",
       "motd": "Welcome back, Commander.\nToday is a good day to hack."
     };
 
     // Sudo state
     let sudoMode = false;
     let awaitingSudoPassword = false;
-    const SUDO_PASSWORD = "zeb11pass"; // Example sudo password
+    const SUDO_PASSWORD = "publicset2025"; // Example sudo password
 
     // Current user
     let currentUser = 'web-user';
@@ -199,11 +199,11 @@ Ping statistics:
 [ OK ] Loading kernel modules...
 [ OK ] Mounting virtual filesystem...
 [ OK ] Starting terminal environment...
-Welcome to Zeb11 Web Terminal.`;
+Welcome to Dun11 Web Terminal.`;
         case 'ping':
           return await simulatePing(args[0]);
         case 'curl':
-          return `<html><body><h1>Welcome to ${args[0] || 'zeb11.com'}</h1></body></html>`;
+          return `<html><body><h1>Welcome to ${args[0] || 'Dun11.com'}</h1></body></html>`;
         case 'repo':
           return 'Official Repo: <a href="https://github.com/hamzah7800/zeb11" target="_blank" style="color:#00ffff;">click here</a>';
         case 'sudo':
