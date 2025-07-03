@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Zeb Web Terminal</title>
+  <style>
+    body {
+      background: #1a1a1a;
+      color: #00ff00;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #terminal-output {
+      flex-grow: 1;
+      padding: 10px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      scrollbar-width: thin;
+      scrollbar-color: #00ff00 #1a1a1a;
+    }
+    #terminal-output::-webkit-scrollbar {
+      width: 8px;
+    }
+    #terminal-output::-webkit-scrollbar-track {
+      background: #1a1a1a;
+    }
+    #terminal-output::-webkit-scrollbar-thumb {
+      background-color: #00ff00;
+      border-radius: 4px;
+    }
+    #input-line {
+      display: flex;
+      padding: 5px 10px;
+      border-top: 1px solid #00ff00;
+    }
+    #prompt {
+      color: #00ff00;
+      margin-right: 5px;
+    }
+    #input {
+      background: none;
+      color: #00ff00;
+      border: none;
+      outline: none;
+      width: 100%;
+      font-family: inherit;
+      font-size: 1em;
+    }
+    #input:focus {
+      caret-color: #00ff00;
+    }
+  </style>
+</head>
+<body>
+  <div id="terminal-output">
+    Welcome to the Web Terminal!<br>
+    Type 'help' for a list of commands.<br><br>
+  </div>
+  <div id="input-line">
+    <span id="prompt">user@web-terminal:~$&nbsp;</span>
+    <input id="input" autofocus spellcheck="false" autocomplete="off" />
+  </div>
+
+  <script>
+    const termOutput = document.getElementById('terminal-output');
+    const input = document.getElementById('input');
+    const promptSpan = document.getElementById('prompt');
+
+    const scrollToBottom = () => {
+      termOutput.scrollTop = termOutput.scrollHeight;
+    };
+
+    const writeToTerminal = (text) => {
+      termOutput.innerHTML += text + "<br>";
+      scrollToBottom();
+    };
+
+    const banner = `
+  ███████╗███████╗██████╗ ██╗    ██╗██╗███╗   ██╗
+  ██╔════╝██╔════╝██╔══██╗██║    ██║██║████╗  ██║
+  █████╗  █████╗  ██████╔╝██║ █╗ ██║██║██╔██╗ ██║
+  ██╔══╝  ██╔══╝  ██╔═══╝ ██║███╗██║██║██║╚██╗██║
+  ███████╗███████╗██║     ╚███╔███╔╝██║██║ ╚████║
+  ╚══════╝╚══════╝╚═╝      ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝
+           Zeb11 Web Terminal - v1.0.0`;
+
+    // Virtual file system
+    const files = {
+      "readme.txt": "Welcome to Zeb Web Terminal.",
+      "motd": "Welcome back, Commander.\nToday is a good day to hack."
+    };
+
+    // Sudo state
+    let sudoMode = false;
+    let awaitingSudoPassword = false;
+    const SUDO_PASSWORD = "zeb11pass"; // Example sudo password
+
+    // Current user
+    let currentUser = 'web-user';
+
+    // Helper to simulate ping with DNS lookup using fetch HEAD request to get IP info (dummy)
+    async function simulatePing(host) {
+      if (!host) host = 'localhost';
+      try {
+        const response = await fetch(`https://${host}`, { method: 'HEAD' });
+        return `Pinging ${host} with 32 bytes of data:
+Reply from 127.0.0.1: bytes=32 time=1ms TTL=64
+Reply from 127.0.0.1: bytes=32 time=1ms TTL=64
+
+Ping statistics:
+  Packets: Sent = 2, Received = 2, Lost = 0 (0% loss)`;
+      } catch (e) {
+        return `Ping request could not find host ${host}. Please check the name and try again.`;
+      }
+    }
+
+    // Helper to simulate DNS lookup
+    async function simulateDNS(domain) {
+      if (!domain) return "Usage: dns [domain]";
+      try {
+        const response = await fetch(`https://dns.google/resolve?name=${domain}`);
+        const data = await response.json();
+        if(data && data.Answer){
+          const answers = data.Answer.map(ans => `${ans.name} - ${ans.type} - ${ans.data}`).join('\n');
+          return `DNS Lookup for ${domain}:\n${answers}`;
+        } else {
+          return `No DNS records found for ${domain}`;
+        }
+      } catch(e) {
+        return `DNS lookup failed for ${domain}`;
+      }
+    }
+
+    const executeCommand = async (cmd) => {
+      if (awaitingSudoPassword) {
+        // Check sudo password
+        if (cmd === SUDO_PASSWORD) {
+          sudoMode = true;
+          awaitingSudoPassword = false;
+          promptSpan.textContent = "root@web-terminal:~$ ";
+          writeToTerminal("sudo: Authentication successful. You now have root privileges.");
+        } else {
+          awaitingSudoPassword = false;
+          writeToTerminal("sudo: Authentication failure");
+        }
+        return "";
+      }
+
+      const [command, ...args] = cmd.trim().split(' ');
+      switch (command) {
+        case 'help':
+          return `Available commands:
+  help              - Show this help message.
+  clear             - Clear the screen.
+  date              - Show current date and time.
+  echo [text]       - Print text.
+  whoami            - Show current user.
+  exit              - End session.
+  banner            - Show Zeb11 banner.
+  motd              - Show message of the day.
+  cat [file]        - Show file contents.
+  boot              - Simulate Zeb11 boot.
+  ping [host]       - Simulate ping command.
+  curl [url]        - Simulate curl output.
+  repo              - Project GitHub link.
+  sudo              - Execute command as root (requires password).
+  addfile [name] [content] - Add a virtual file.
+  ls                - List virtual files.
+  dns [domain]      - Simulate DNS lookup.
+  reboot            - Simulate rebooting terminal.`;
+        case 'date':
+          return new Date().toString();
+        case 'whoami':
+          return sudoMode ? 'root' : currentUser;
+        case 'echo':
+          return args.join(' ');
+        case 'clear':
+          termOutput.innerHTML = '';
+          return '';
+        case 'exit':
+          return 'Session ended. Refresh the page to start a new session.';
+        case 'banner':
+          return banner;
+        case 'motd':
+          return files['motd'].replace(/\n/g, '<br>');
+        case 'cat':
+          if (!args[0]) return 'cat: Missing file operand.';
+          if (files[args[0]]) {
+            return files[args[0]].replace(/\n/g, '<br>');
+          }
+          return `cat: ${args[0]}: No such file or directory`;
+        case 'boot':
+          return `[ OK ] Booting ZebOS...
+[ OK ] Loading kernel modules...
+[ OK ] Mounting virtual filesystem...
+[ OK ] Starting terminal environment...
+Welcome to Zeb11 Web Terminal.`;
+        case 'ping':
+          return await simulatePing(args[0]);
+        case 'curl':
+          return `<html><body><h1>Welcome to ${args[0] || 'zeb11.com'}</h1></body></html>`;
+        case 'repo':
+          return 'Official Repo: <a href="https://github.com/hamzah7800/zeb11" target="_blank" style="color:#00ffff;">click here</a>';
+        case 'sudo':
+          if (sudoMode) {
+            return 'You are already root.';
+          }
+          awaitingSudoPassword = true;
+          writeToTerminal('Password: (type password and press Enter)');
+          return '';
+        case 'addfile':
+          if (!sudoMode) return 'Permission denied: You must use sudo to add files.';
+          if (!args[0]) return 'Usage: addfile [filename] [content]';
+          const filename = args[0];
+          const content = args.slice(1).join(' ');
+          if (!content) return 'Usage: addfile [filename] [content]';
+          files[filename] = content;
+          return `File '${filename}' added.`;
+        case 'ls':
+          return Object.keys(files).join('\n');
+        case 'dns':
+          return await simulateDNS(args[0]);
+        case 'reboot':
+          termOutput.innerHTML = '';
+          writeToTerminal('Rebooting Zeb11 Web Terminal...\n');
+          writeToTerminal(banner);
+          promptSpan.textContent = 'user@web-terminal:~$ ';
+          sudoMode = false;
+          return '';
+        default:
+          return `Command not found: ${command}`;
+      }
+    };
+
+    input.addEventListener('keydown', async (e) => {
+      if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        if (!cmd) return;
+        writeToTerminal(`<span style="color: #00ff00;">${sudoMode ? 'root' : 'user'}@web-terminal:~$</span> ${cmd}`);
+
+        const output = await executeCommand(cmd);
+        if (output) writeToTerminal(output.replace(/\n/g, '<br>'));
+
+        input.value = '';
+
+        // Keep focus
+        input.focus();
+      }
+    });
+
+    window.addEventListener('load', () => input.focus());
+    document.addEventListener('click', () => input.focus());
+  </script>
+</body>
+</html>

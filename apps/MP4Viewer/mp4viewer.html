@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MP4 Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 10px;
+      font-family: sans-serif;
+      background: #f8f8f8;
+    }
+    input {
+      margin-bottom: 10px;
+    }
+    video {
+      width: 100%;
+      max-height: 80vh;
+      border: 1px solid #ccc;
+      background: black;
+    }
+  </style>
+</head>
+<body>
+  <h2>Select an MP4 file to play</h2>
+  <input type="file" accept="video/mp4" onchange="playVideo(event)" />
+  <video id="videoPlayer" controls></video>
+
+  <script>
+    function playVideo(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const video = document.getElementById('videoPlayer');
+        video.src = URL.createObjectURL(file);
+        video.play();
+      }
+    }
+  </script>
+</body>
+</html>
