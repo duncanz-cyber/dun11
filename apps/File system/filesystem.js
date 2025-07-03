@@ -3,7 +3,7 @@ let fileSystem = JSON.parse(localStorage.getItem('Dun11_fs')) || {
 };
 
 function saveFileSystem() {
-  localStorage.setItem('zeb11_fs', JSON.stringify(fileSystem));
+  localStorage.setItem('Dun11_fs', JSON.stringify(fileSystem));
 }
 
 function renderFileSystem() {
