@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Zeb11 Notepad</title>
+  <title>Dun11 Notepad</title>
   <style>
     :root {
       --bg: #f4f4f4;
@@ -96,7 +96,7 @@
 </head>
 <body data-theme="light">
   <div id="toolbar">
-    <span>Zeb11 Notepad</span>
+    <span>Dun11 Notepad</span>
     <input id="filename" type="text" placeholder="Filename">
     <input id="upload" type="file">
     <button onclick="saveFile()">Save</button>
@@ -119,7 +119,7 @@
     const preview = document.getElementById('preview');
 
     let db;
-    const request = indexedDB.open("Zeb11Notepad", 1);
+    const request = indexedDB.open("Dun11Notepad", 1);
     request.onupgradeneeded = e => {
       db = e.target.result;
       db.createObjectStore("tabs", { keyPath: "id" });
