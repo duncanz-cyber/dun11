@@ -22,19 +22,19 @@
     <button id="start-button" onclick="toggleStartMenu()"></button>
     <div id="start-menu">
       <ul>
-        <li onclick="openApp('zebgx')">ZebGX Browser</li>
-        <li onclick="openApp('zeb-store')">Zeb Store</li>
-        <li onclick="openApp('zeb-installer')">Package Installer</li>
+        <li onclick="openApp('Dungx')">DunGX Browser</li>
+        <li onclick="openApp('Dun-store')">Dun Store</li>
+        <li onclick="openApp('Dun-installer')">Package Installer</li>
       </ul>
     </div>
   </div>
 </div>
 
 <!-- Package Installer App -->
-<div id="zeb-installer" class="app-window">
+<div id="Dun-installer" class="app-window">
   <div class="app-header">
     <span>Package Installer</span>
-    <button onclick="closeApp('zeb-installer')">✖</button>
+    <button onclick="closeApp('Dun-installer')">✖</button>
   </div>
   <div class="app-content">
     <p>Select packages to install:</p>
@@ -64,7 +64,7 @@
 
   function runInstaller() {
     const log = document.getElementById('install-log');
-    const checkboxes = document.querySelectorAll('#zeb-installer input[type="checkbox"]');
+    const checkboxes = document.querySelectorAll('#Dun-installer input[type="checkbox"]');
     let installed = [];
 
     checkboxes.forEach(cb => {
