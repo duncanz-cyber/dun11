@@ -14,7 +14,7 @@ let gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
 document.getElementById('gpu').textContent = gpu;
 
 // Simulated running apps
-const apps = ['ZebGX', 'Zeb Store', 'Theme Manager'];
+const apps = ['DunGX', 'Dun Store', 'Theme Manager'];
 let appList = document.getElementById('app-list');
 apps.forEach(app => {
   let li = document.createElement('li');
@@ -47,7 +47,7 @@ function renderCube() {
 
 function ratePerformance(fps) {
   if (fps > 50) return "🟢 High (Gaming/Multitasking Ready)";
-  if (fps > 30) return "🟡 Medium (Usable for Zeb11)";
+  if (fps > 30) return "🟡 Medium (Usable for Dun11)";
   return "🔴 Low (Consider Lite Mode)";
 }
 
