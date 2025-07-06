@@ -87,7 +87,7 @@
   ██╔══╝  ██╔══╝  ██╔═══╝ ██║███╗██║██║██║╚██╗██║
   ███████╗███████╗██║     ╚███╔███╔╝██║██║ ╚████║
   ╚══════╝╚══════╝╚═╝      ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝
-           Zeb11 Web Terminal - v1.0.0`;
+           Dun11 Web Terminal - v1.0.0`;
 
     // Virtual file system
     const files = {
@@ -195,7 +195,7 @@ Ping statistics:
           }
           return `cat: ${args[0]}: No such file or directory`;
         case 'boot':
-          return `[ OK ] Booting ZebOS...
+          return `[ OK ] Booting DunOS...
 [ OK ] Loading kernel modules...
 [ OK ] Mounting virtual filesystem...
 [ OK ] Starting terminal environment...
@@ -205,7 +205,7 @@ Welcome to Dun11 Web Terminal.`;
         case 'curl':
           return `<html><body><h1>Welcome to ${args[0] || 'Dun11.com'}</h1></body></html>`;
         case 'repo':
-          return 'Official Repo: <a href="https://github.com/hamzah7800/zeb11" target="_blank" style="color:#00ffff;">click here</a>';
+          return 'Official Repo: <a href="https://github.com/duncanz-cyber/dun11" target="_blank" style="color:#00ffff;">click here</a>';
         case 'sudo':
           if (sudoMode) {
             return 'You are already root.';
@@ -227,7 +227,7 @@ Welcome to Dun11 Web Terminal.`;
           return await simulateDNS(args[0]);
         case 'reboot':
           termOutput.innerHTML = '';
-          writeToTerminal('Rebooting Zeb11 Web Terminal...\n');
+          writeToTerminal('Rebooting Dun11 Web Terminal...\n');
           writeToTerminal(banner);
           promptSpan.textContent = 'user@web-terminal:~$ ';
           sudoMode = false;
